@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plant mix optimizer — base & peak load sizing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark">PMX</span>
+      <div class="brand-text">
+        <h1>Plant mix optimizer</h1>
+        <p>Base &amp; peak load plant sizing from a load duration curve</p>
+      </div>
+    </div>
+    <div class="status-chip" id="statusChip">
+      <span class="dot"></span> live
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+
+  <section class="panel input-panel" aria-label="Inputs">
+    <h2 class="panel-title">01 — system inputs</h2>
+
+    <div class="field">
+      <label for="P">Maximum demand, P <span class="unit">MW</span></label>
+      <input type="number" id="P" value="503" min="1" step="1">
+    </div>
+
+    <div class="field">
+      <label for="x">Load factor, x <span class="unit">%</span></label>
+      <input type="number" id="x" value="56" min="1" max="99" step="0.1">
+    </div>
+
+    <div class="field-group">
+      <h3>Plant 1</h3>
+      <div class="field">
+        <label for="C1">Fixed cost, C1 <span class="unit">₹ / kW / yr</span></label>
+        <input type="number" id="C1" value="603" min="0" step="1">
+      </div>
+      <div class="field">
+        <label for="R1">Running cost, R1 <span class="unit">paise / kWh</span></label>
+        <input type="number" id="R1" value="6" min="0" step="0.1">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <h3>Plant 2</h3>
+      <div class="field">
+        <label for="C2">Fixed cost, C2 <span class="unit">₹ / kW / yr</span></label>
+        <input type="number" id="C2" value="307" min="0" step="1">
+      </div>
+      <div class="field">
+        <label for="R2">Running cost, R2 <span class="unit">paise / kWh</span></label>
+        <input type="number" id="R2" value="11" min="0" step="0.1">
+      </div>
+    </div>
+
+    <p class="note" id="warningNote"></p>
+  </section>
+
+  <section class="panel results-panel" aria-label="Results">
+    <h2 class="panel-title">02 — plant identification</h2>
+
+    <div class="readout-grid">
+      <div class="readout c-base">
+        <span class="readout-label">Base load plant</span>
+        <span class="readout-value" id="baseLabel">Plant 1</span>
+        <span class="readout-sub" id="baseCap">— MW · runs 8760 h/yr</span>
+      </div>
+      <div class="readout c-peak">
+        <span class="readout-label">Peak load plant</span>
+        <span class="readout-value" id="peakLabel">Plant 2</span>
+        <span class="readout-sub" id="peakCap">— MW</span>
+      </div>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric">
+        <span class="metric-label">Breakeven duration, h₀</span>
+        <span class="metric-value" id="h0Val">— h</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Peak plant operating hours</span>
+        <span class="metric-value" id="peakHoursVal">— h / yr</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Split demand, Dc</span>
+        <span class="metric-value" id="dcVal">— MW</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Minimum demand, Pmin</span>
+        <span class="metric-value" id="pminVal">— MW</span>
+      </div>
+    </div>
+
+    <h2 class="panel-title">03 — load duration curve</h2>
+    <div class="chart-wrap">
+      <canvas id="ldcChart" role="img" aria-label="Load duration curve showing base and peak load split"></canvas>
+    </div>
+
+    <h2 class="panel-title">04 — annual cost vs. hours of use</h2>
+    <div class="chart-wrap">
+      <canvas id="costChart" role="img" aria-label="Annual cost per kW versus hours of use for both plants"></canvas>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>Model: linear (triangular) load duration curve, Pmin = P(2x − 1). Crossover h₀ = (C_base − C_peak) / (R_peak − R_base).</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
