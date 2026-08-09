@@ -7,11 +7,6 @@ per year the peak plant needs to run.
 Built for the Power Systems assignment — generalized two-plant economic
 dispatch problem (base vs. peak load plant selection).
 
-## Live demo
-
-Open `index.html` in any browser — no server, build step, or install
-required. All computation runs client-side in `script.js`.
-
 ## Files
 
 | File | Purpose |
